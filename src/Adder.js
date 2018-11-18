@@ -20,7 +20,8 @@ const EtoX=ele=>{
             path=`//${localName}${getId(ele)||getClass(ele)}${getName(ele)}${getPlaceHolder(ele)}`;
         }
         if(['li'].includes(localName)){
-            path=`/${localName}[${idx(ele)}]`
+            // path=`/${localName}[${idx(ele)}]`
+            path=`/${localName}`
         }
         return [...generator(ele.parentNode),path];
     }
@@ -46,7 +47,7 @@ const XtoE=(STR_XPATH)=>{
     try{
         var xresult = document.evaluate(STR_XPATH, document, null, XPathResult.ANY_TYPE, null);
     }catch(e){
-        console.error('Invalid Xpath');
+        console.error('Invalid Xpath:',e);
         return [];
     }
     var xnodes = [];

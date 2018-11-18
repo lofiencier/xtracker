@@ -32,7 +32,7 @@ export default class List extends Component{
             <span>当前xpath:{xpath}</span>
             <br/>
             {
-                nodes.map((v,i)=><div className={activeIndex==i?"tracker-dom-action active":'tracker-dom-action'} key={i}>
+                nodes.map((v,i)=><div className={activeIndex>=i?"tracker-dom-action active":'tracker-dom-action'} key={i}>
                     <a href="javascript:void(0)" onClick={this.onClick.bind(this,i)}>{regs[i].match(/\/{1,2}[^\s\/]+/g)[i]}</a>
                     {/* <a className="btns" href="javascript:void(0)">确定</a> */}
                     <a className="btns" href="javascript:void(0)" onClick={this.delRule.bind(this,i)}>删除</a>

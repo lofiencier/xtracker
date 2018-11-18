@@ -37,16 +37,18 @@ class App extends Component {
       }
   }
   onDelete(index){
-    let regs=this.state.curXpath.match(/\/{1,2}[^\s\/]+/g).filter((v,i)=>i!=index);
+    let regs=this.state.curXpath.match(/\/{1,2}[^\s\/]+/g);
+    regs[index]='/';
+    regs=regs.join('').match(/\/{1,2}[^\s\/]+/g);
     console.log(regs);
     let curXpath=regs.join('');
-    console.log(curXpath);
     let regsBySort=[];
     if(!!regs&&regs.length>1){
       regsBySort=regs.map((v,i)=>regs.slice(0,i+1).join(''));
     }else{
       regsBySort=regs;
     }
+    console.log(curXpath);
     let nodes=XtoE(curXpath);
     this.setState({
       regs:regsBySort,
@@ -77,7 +79,23 @@ class App extends Component {
             <input type="text" name="xxx" placeholder="你在说什么？" id='id' className="className isjk active"/>
           </div>
         </div>
-        <div id="sle"></div>
+        <div id="sle">
+          <div className="aisoso">
+            <div className="isuasods">
+              <ul>
+                <li>121</li>
+                <li>121</li>
+                <li>121</li>
+                <li>121</li>
+                <li>121</li>
+                <li>121</li>
+                <li>121</li>
+                <li>121</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
       </div>
     );
   }
