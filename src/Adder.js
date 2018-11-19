@@ -1,5 +1,5 @@
 const EtoX=ele=>{
-    const idx = (sib, name) => sib ? idx(sib.previousElementSibling, name || sib.localName) + (sib.localName == name): 1;
+    
     const generator=ele=>{
         if(!ele||ele.nodeType!==1){
             return ['/']
@@ -42,6 +42,7 @@ const getPlaceHolder=ele=>!!ele.placeholder?`[contains(@placeholder,'${ele.place
 const getName=ele=>!!ele.name?`[@name='${ele.name}']`:'';
 const invalidClass=cls=>cls.filter(i=>(!i.includes('active'))&&i!='on'&&!/\d/g.test(i)&&i.length>3);
 
+const idx = (sib, name) => sib ? idx(sib.previousElementSibling, name || sib.localName) + (sib.localName == name): 1;
 
 const XtoE=(STR_XPATH)=>{
     try{
@@ -60,5 +61,6 @@ const XtoE=(STR_XPATH)=>{
 
 export {
     EtoX,
-    XtoE
+    XtoE,
+    idx
 };

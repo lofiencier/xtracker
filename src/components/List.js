@@ -20,6 +20,9 @@ export default class List extends Component{
     delRule(index){
         this.props.onDelete(index);
     }
+    addIndex(index){
+        this.props.addIndex&&this.props.addIndex(index);
+    }
     render(){
         const {sum=0,xpath='',nodes=[],regs=[],children}=this.props;
         let activeIndex=regs.findIndex(i=>i.includes(xpath));
@@ -29,12 +32,10 @@ export default class List extends Component{
         });
         return <div className="tracker-root">
             <h2>当前匹配数:{sum}</h2>
-            <span>当前xpath:{xpath}</span>
-            <br/>
             {
                 nodes.map((v,i)=><div className={activeIndex>=i?"tracker-dom-action active":'tracker-dom-action'} key={i}>
                     <a href="javascript:void(0)" onClick={this.onClick.bind(this,i)}>{regs[i].match(/\/{1,2}[^\s\/]+/g)[i]}</a>
-                    {/* <a className="btns" href="javascript:void(0)">确定</a> */}
+                    <a className="btns" href="javascript:void(0)" onClick={this.addIndex.bind(this,i)}>区分</a>
                     <a className="btns" href="javascript:void(0)" onClick={this.delRule.bind(this,i)}>删除</a>
                 </div>)
             }

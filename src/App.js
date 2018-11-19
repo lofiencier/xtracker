@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import {EtoX,XtoE} from './Adder'
+import {EtoX,XtoE,idx} from './Adder'
 import List from './components/List'
 class App extends Component {
   constructor(props){
@@ -10,6 +10,8 @@ class App extends Component {
       regs:[],
       sum:0,
       curXpath:'',
+      curNode:document,
+      ePath:[document],
     }
     this.state=this.initail;
     this.clickHandler=this.clickHandler.bind(this);
@@ -31,7 +33,9 @@ class App extends Component {
           sum:XtoE(xpath).length,
           curXpath:xpath,
           regs:regsBySort,
-          nodes:regsBySort.map(i=>XtoE(i))
+          nodes:regsBySort.map(i=>XtoE(i)),
+          curNode:e.target,
+          ePath:e.path
         });
         return false;
       }
@@ -48,7 +52,6 @@ class App extends Component {
     }else{
       regsBySort=regs;
     }
-    console.log(curXpath);
     let nodes=XtoE(curXpath);
     this.setState({
       regs:regsBySort,
@@ -57,8 +60,30 @@ class App extends Component {
       nodes:regsBySort.map(i=>XtoE(i))
     })
   }
+  addIndex(index){
+    let regs=this.state.regs.reverse()[0].match(/\/{1,2}[^\s\/]+/g);
+    console.log(this.state.nodes);
+    const {ePath=[]} =this.state;
+    let node=this.state.nodes[index].filter(i=>ePath.includes(i))[0];
+    let idx=this.state.nodes[index].findIndex(i=>i==node);
+    regs[index]=!/\[\d+\]/g.test(regs[index])?`${regs[index]}[${idx+1}]`:regs[index];
+    console.log(regs);
+    let curXpath=regs.join('');
+    let regsBySort=regs.map((v,i)=>regs.slice(0,i+1).join(''));
+    let nodes=XtoE(curXpath);
+    this.setState({
+      regs:regsBySort,
+      curXpath,
+      sum:nodes.length,
+      nodes:regsBySort.map(i=>XtoE(i))
+    });
+  }
   onIndexChagne(index){
-    this.setState({curXpath:this.state.regs[index],sum:XtoE(this.state.regs[index]).length})
+    console.log(this.state.nodes);
+    this.setState({
+      curXpath:this.state.regs[index],
+      sum:XtoE(this.state.regs[index]).length
+    })
   }
   reset(){
     this.setState(this.initail);
@@ -68,8 +93,14 @@ class App extends Component {
     let reset=<a key="reset" href="javascript:void(0)" onClick={this.reset.bind(this)}>重置</a>
     return (
       <div>
-        <List sum={sum} xpath={curXpath} nodes={nodes} regs={regs} onChange={this.onIndexChagne.bind(this)} onDelete={this.onDelete.bind(this)}>
-          <Form>{reset}</Form>
+        <List sum={sum}
+          xpath={curXpath}
+          nodes={nodes}
+          regs={regs}
+          addIndex={this.addIndex.bind(this)}
+          onChange={this.onIndexChagne.bind(this)}
+          onDelete={this.onDelete.bind(this)}>
+          <Form {...this.state}>{reset}</Form>
         </List>
         <div id="sle">
           <p>p<span>span</span></p>
@@ -103,7 +134,7 @@ class App extends Component {
 
 const Form =(props)=>{
   return <form action="javascript:void(0)" onSubmit={props.onSubmit}>
-    <p>currentPath:</p>
+    <p>currentPath:{props.curXpath}</p>
     <label htmlFor="event">Event:</label>
     <input type="text" name="event"/>
     <br/>
