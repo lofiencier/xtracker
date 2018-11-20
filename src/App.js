@@ -27,9 +27,14 @@ class App extends Component {
       let xpath=EtoX(e.target);
       let regs=xpath.match(/\/{1,2}[^\s\/]+/g);
       let regsBySort=[];
+      let originPath={};
       if(!!regs&&regs.length>1){
-        regsBySort=regs.map((v,i)=>regs.slice(0,i+1).join(''));
+        regsBySort=regs.map((v,i)=>{
+          originPath[i]=v+regs[i+1];
+          return regs.slice(0,i+1).join('')
+        });
       }
+      
       if(!xpath.includes('tracker')){
         e.preventDefault();
         this.setState({
@@ -38,7 +43,8 @@ class App extends Component {
           regs:regsBySort,
           nodes:regsBySort.map(i=>XtoE(i)),
           curNode:e.target,
-          ePath:e.path
+          ePath:e.path,
+          originPath
         });
         return false;
       }
@@ -93,14 +99,13 @@ class App extends Component {
   }
   onSubmit(e){
     const {title={},eventName={},namespace={}}=e.target;
-    // let data=new FormData(e.target);
-    let data={namespace:"user"};
+    let data=new FormData(e.target);
     console.log(data);
-    instance.post('http://localhost:3001/add',{namespace:'>>>'}).then(res=>console.log(res));
+    instance.post('http://localhost:3001/add',data).then(res=>console.log(res));
   }
   render() {
     const {sum,regs,nodes,curXpath}=this.state;
-    let reset=<a key="reset" href="javascript:void(0)" onClick={this.reset.bind(this)}>重置</a>
+    let reset=<button key="reset" onClick={this.reset.bind(this)}>重置</button>
     return (
       <div>
         <List sum={sum}
@@ -144,30 +149,29 @@ class App extends Component {
 
 const Form =(props)=>{
   return <form action="javascript:void(0)" onSubmit={props.onSubmit} className="tracker-form">
-    <label htmlFor="title">title:</label>
-    <input type="text" name="title"/>
+    <label htmlFor="namespace">NameSpace</label>
+    <input type="text" name="namespace" defaultValue={document.location.href.replace(/(http:|https:)/g,'')}/>
     <br/>
-    <input type="hidden" name="reffer" value={document.referrer}/>
-    <br/>
-    <label htmlFor="eventType">eventType:</label>
-    <input type="checkbox" name="eventType" value="checked"/>
-    <br/>
+
     <label htmlFor="eventName">Event(unique):</label>
     <input type="text" name="eventName"/>
     <br/>
-    <label htmlFor="namespace">NameSpace</label>
-    <input type="text" name="namespace"/>
+
+    <select name="eventType">
+      <option value="onblur">onblur</option>
+      <option value="onclick">onclick</option>
+    </select>
     <br/>
-    <input type="radio" name="timestamp" value="true"/>
-    <label htmlFor="timestamp">timestamp</label>
+
+    <label htmlFor="title">title:</label>
+    <input type="text" name="title"/>
+    <input type="hidden" name="reffer" value={document.referrer}/>
     <br/>
-    <input type="radio" name="master"/>
-    <label htmlFor="master">区分master</label>
-    <br/>
+    
     <label htmlFor="cache">累积次数提交:</label>
     <input type="text" name="cache"/>
     <br/>
-    <input type="text" name="xpath" disabled value={props.curXpath}/>
+    <input type="text" name="xpath" value={props.curXpath}/>
     <br/>
     {
       props.children&&props.children

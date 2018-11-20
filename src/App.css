@@ -20,6 +20,10 @@ html,body{
   color:#fff;
   z-index: 999;
 }
+.tracker-form{
+  display: flex;
+  flex-direction: column;
+}
 span{
   word-break: break-all;
 }

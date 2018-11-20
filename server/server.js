@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 var addEvent=require('./addEvent');
 var removeEvent=require('./removeEvent');
 var list=require('./listEvent');
+var multer=require('multer')
+var upload=multer();
 
 var app = express();
 
@@ -27,7 +29,8 @@ app.all("*", function(req, res, next) {
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(upload.array()); 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
