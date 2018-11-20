@@ -3,7 +3,7 @@ const EtoX=ele=>{
     const generator=ele=>{
         if(!ele||ele.nodeType!==1){
             return ['/']
-        }
+        };
         let localName=ele.localName.toLowerCase();
         let path=`/${localName}`;
         // eslint-disable-next-line default-case
@@ -12,6 +12,9 @@ const EtoX=ele=>{
                 path=`/${localName}${getId(ele)||getClass(ele)}`
             else
                 path='/'
+        }
+        if(['form'].includes(localName)){
+            path=`/${localName}${getId(ele)||getClass(ele)}`;
         }
         if(['html','body'].includes(localName)){
             path='';

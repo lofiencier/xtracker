@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import './App.css';
 import {EtoX,XtoE,idx} from './Adder'
 import List from './components/List'
+import axios from 'axios'
+const instance=axios.create();
+instance.defaults.headers={'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'};
 class App extends Component {
   constructor(props){
     super();
@@ -88,6 +91,13 @@ class App extends Component {
   reset(){
     this.setState(this.initail);
   }
+  onSubmit(e){
+    const {title={},eventName={},namespace={}}=e.target;
+    // let data=new FormData(e.target);
+    let data={namespace:"user"};
+    console.log(data);
+    instance.post('http://localhost:3001/add',{namespace:'>>>'}).then(res=>console.log(res));
+  }
   render() {
     const {sum,regs,nodes,curXpath}=this.state;
     let reset=<a key="reset" href="javascript:void(0)" onClick={this.reset.bind(this)}>重置</a>
@@ -100,7 +110,7 @@ class App extends Component {
           addIndex={this.addIndex.bind(this)}
           onChange={this.onIndexChagne.bind(this)}
           onDelete={this.onDelete.bind(this)}>
-          <Form {...this.state}>{reset}</Form>
+          <Form {...this.state} onSubmit={this.onSubmit.bind(this)}>{reset}</Form>
         </List>
         <div id="sle">
           <p>p<span>span</span></p>
@@ -133,16 +143,31 @@ class App extends Component {
 }
 
 const Form =(props)=>{
-  return <form action="javascript:void(0)" onSubmit={props.onSubmit}>
-    <p>currentPath:{props.curXpath}</p>
-    <label htmlFor="event">Event:</label>
-    <input type="text" name="event"/>
+  return <form action="javascript:void(0)" onSubmit={props.onSubmit} className="tracker-form">
+    <label htmlFor="title">title:</label>
+    <input type="text" name="title"/>
+    <br/>
+    <input type="hidden" name="reffer" value={document.referrer}/>
+    <br/>
+    <label htmlFor="eventType">eventType:</label>
+    <input type="checkbox" name="eventType" value="checked"/>
+    <br/>
+    <label htmlFor="eventName">Event(unique):</label>
+    <input type="text" name="eventName"/>
     <br/>
     <label htmlFor="namespace">NameSpace</label>
     <input type="text" name="namespace"/>
     <br/>
     <input type="radio" name="timestamp" value="true"/>
     <label htmlFor="timestamp">timestamp</label>
+    <br/>
+    <input type="radio" name="master"/>
+    <label htmlFor="master">区分master</label>
+    <br/>
+    <label htmlFor="cache">累积次数提交:</label>
+    <input type="text" name="cache"/>
+    <br/>
+    <input type="text" name="xpath" disabled value={props.curXpath}/>
     <br/>
     {
       props.children&&props.children
