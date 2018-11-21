@@ -91,7 +91,6 @@ class App extends Component {
     });
   }
   onIndexChagne(index){
-    console.log(this.state.nodes);
     this.setState({
       curXpath:this.state.regs[index],
       sum:XtoE(this.state.regs[index]).length
@@ -144,6 +143,7 @@ class App extends Component {
             </div>
           </div>
         </div>
+        <div id="sle" style={{minHeight:'130px'}}></div>
         <External/>
       </div>
     );

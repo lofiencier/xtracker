@@ -1,16 +1,13 @@
 const EtoX=(ele,withIndex)=>{
     const generator=(ele,)=>{
         let id='';
-        if(withIndex){
-            id=`[${idx(ele)}]`;
-        }
+        
 
         if(!ele||ele.nodeType!==1){
             return ['/']
         };
         let localName=ele.localName.toLowerCase();
         let path=`/${localName}`;
-        // eslint-disable-next-line default-case
         if(['div'].includes(localName)){
             if(getId(ele)||getClass(ele))
                 path=`/${localName}${getId(ele)||getClass(ele)}`
@@ -29,6 +26,9 @@ const EtoX=(ele,withIndex)=>{
         if(['li'].includes(localName)){
             // path=`/${localName}[${idx(ele)}]`
             path=`/${localName}`
+        }
+        if(withIndex){
+            id=`[${idx(ele,false,`/${path}`)}]`;
         }
         path=path=='/'||!path?path:path+id;
         return [...generator(ele.parentNode),path];
@@ -50,10 +50,12 @@ const getPlaceHolder=ele=>!!ele.placeholder?`[contains(@placeholder,'${ele.place
 const getName=ele=>!!ele.name?`[@name='${ele.name}']`:'';
 const invalidClass=cls=>cls.filter(i=>(!i.includes('active'))&&i!='on'&&!/\d/g.test(i)&&i.length>3);
 
-const idx = (sib, name) => sib ? idx(sib.previousElementSibling, name || sib.localName) + (sib.localName == name): 1;
+const idx = (sib, name,xpath) =>sib&&XtoE(xpath).includes(sib)?idx(sib.previousElementSibling, name || sib.localName,xpath) + (sib.localName == name):1;
 
 const XtoE=(STR_XPATH)=>{
     try{
+        if(/\/$/.test(STR_XPATH)) return [];
+        STR_XPATH=STR_XPATH.replace(/\/{3}/g,'//');
         var xresult = document.evaluate(STR_XPATH, document, null, XPathResult.ANY_TYPE, null);
     }catch(e){
         console.error('Invalid Xpath:',e);
