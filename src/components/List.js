@@ -16,12 +16,22 @@ export default class List extends Component{
                 v.className=v.className.replace(/\s*track-sequence-active\s*/g,'');
             }));
         }
+        if(prev.length==0&&next.length!=0){
+            this.setState({originPath:next,deleted:new Array(next.length).fill(false)});
+        }
+        if(next.length==0){
+            this.setState({originPath:next,deleted:new Array(next.length).fill(false)});
+        }
     }
     delRule(index){
-        this.props.onDelete(index);
+        let node=this.props.nodes[index];
+        let origin=this.state.originPath.findIndex(i=>i[0]==node[0]);
+        this.props.onDelete(index,origin);
     }
     addIndex(index){
-        this.props.addIndex&&this.props.addIndex(index);
+        let node=this.props.nodes[index];
+        let origin=this.state.originPath.findIndex(i=>i[0]==node[0]);
+        this.props.addIndex&&this.props.addIndex(index,origin);
     }
     render(){
         const {sum=0,xpath='',nodes=[],regs=[],children}=this.props;

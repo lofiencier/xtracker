@@ -1,0 +1,34 @@
+{
+    "//localhost:3000/": {
+        "goFuckYourSelf": {
+            "eventType": "onblur",
+            "title": "test",
+            "reffer": "http://localhost:3000/",
+            "cache": "10",
+            "xpath": "//div[@id='root']//div[@id='sle']/div[contains(@class,'aisoso')]/div[contains(@class,'isuasods')]/ul/li[3]"
+        },
+        "login": {
+            "eventType": "onblur",
+            "title": "login",
+            "reffer": "http://localhost:3000/",
+            "cache": "10",
+            "xpath": "//div[@id='root']//div[@id='sle']/div[contains(@class,'aisoso')]/div[contains(@class,'isuasods')]/ul/li"
+        }
+    },
+    "//localhost:3000/login": {
+        "login": {
+            "eventType": "onblur",
+            "title": "注销",
+            "reffer": "http://localhost:3000/",
+            "cache": "1231",
+            "xpath": ""
+        },
+        "logout": {
+            "eventType": "onblur",
+            "title": "注销",
+            "reffer": "http://localhost:3000/",
+            "cache": "1231",
+            "xpath": "//div[@id='root']//div[@id='sle']/div[contains(@class,'aisoso')]/div[contains(@class,'isuasods')]/ul/li"
+        }
+    }
+}

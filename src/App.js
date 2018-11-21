@@ -3,6 +3,7 @@ import './App.css';
 import {EtoX,XtoE,idx} from './Adder'
 import List from './components/List'
 import axios from 'axios'
+import External from './components/external'
 const instance=axios.create();
 instance.defaults.headers={'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'};
 class App extends Component {
@@ -15,6 +16,7 @@ class App extends Component {
       curXpath:'',
       curNode:document,
       ePath:[document],
+      indexTag:[]
     }
     this.state=this.initail;
     this.clickHandler=this.clickHandler.bind(this);
@@ -49,11 +51,11 @@ class App extends Component {
         return false;
       }
   }
-  onDelete(index){
+  onDelete(index,origin){
+    const {indexTag}=this.state;
     let regs=this.state.curXpath.match(/\/{1,2}[^\s\/]+/g);
     regs[index]='/';
     regs=regs.join('').match(/\/{1,2}[^\s\/]+/g);
-    console.log(regs);
     let curXpath=regs.join('');
     let regsBySort=[];
     if(!!regs&&regs.length>1){
@@ -66,25 +68,26 @@ class App extends Component {
       regs:regsBySort,
       curXpath,
       sum:nodes.length,
-      nodes:regsBySort.map(i=>XtoE(i))
+      nodes:regsBySort.map(i=>XtoE(i)),
+      indexTag:indexTag.filter(i=>i!=origin)
     })
   }
-  addIndex(index){
+  addIndex(index,origin){
     let regs=this.state.regs.reverse()[0].match(/\/{1,2}[^\s\/]+/g);
-    console.log(this.state.nodes);
-    const {ePath=[]} =this.state;
+    let {ePath=[],indexTag=[]} =this.state;
     let node=this.state.nodes[index].filter(i=>ePath.includes(i))[0];
     let idx=this.state.nodes[index].findIndex(i=>i==node);
     regs[index]=!/\[\d+\]/g.test(regs[index])?`${regs[index]}[${idx+1}]`:regs[index];
-    console.log(regs);
     let curXpath=regs.join('');
     let regsBySort=regs.map((v,i)=>regs.slice(0,i+1).join(''));
     let nodes=XtoE(curXpath);
+    if(!indexTag.includes(origin)&&origin!=-1) indexTag=[...indexTag,origin];
     this.setState({
       regs:regsBySort,
       curXpath,
       sum:nodes.length,
-      nodes:regsBySort.map(i=>XtoE(i))
+      nodes:regsBySort.map(i=>XtoE(i)),
+      indexTag
     });
   }
   onIndexChagne(index){
@@ -141,7 +144,7 @@ class App extends Component {
             </div>
           </div>
         </div>
-        
+        <External/>
       </div>
     );
   }

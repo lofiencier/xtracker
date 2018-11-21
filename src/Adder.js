@@ -1,6 +1,10 @@
-const EtoX=ele=>{
-    
-    const generator=ele=>{
+const EtoX=(ele,withIndex)=>{
+    const generator=(ele,)=>{
+        let id='';
+        if(withIndex){
+            id=`[${idx(ele)}]`;
+        }
+
         if(!ele||ele.nodeType!==1){
             return ['/']
         };
@@ -26,6 +30,7 @@ const EtoX=ele=>{
             // path=`/${localName}[${idx(ele)}]`
             path=`/${localName}`
         }
+        path=path=='/'||!path?path:path+id;
         return [...generator(ele.parentNode),path];
     }
     // return generator(ele).join('').replace(/\/{3}/g,'//');
